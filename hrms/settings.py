@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-3z$jqw5@xb*2m_ude_f_2vb7aw6-7!p5k#b_wp(e-bhidmbnv+
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['hrmtoolkit-production.up.railway.app', 'localhost', '127.0.0.1']
 
 
 # Application definition
