@@ -1,0 +1,56 @@
+{% extends "dashboard/base.html" %}
+
+{% block content %}
+<h2>Welcome to HRMS Dashboard</h2>
+
+<!-- Filters (optional UI) -->
+<div class="row mb-3">
+  <div class="col-md-3">
+    <input type="text" class="form-control" placeholder="Filter by Name">
+  </div>
+  <div class="col-md-3">
+    <select class="form-control">
+      <option selected disabled>Department</option>
+      <option>HR</option>
+      <option>Engineering</option>
+    </select>
+  </div>
+  <div class="col-md-3">
+    <input type="date" class="form-control" placeholder="Start Date">
+  </div>
+  <div class="col-md-3">
+    <input type="date" class="form-control" placeholder="End Date">
+  </div>
+</div>
+
+<!-- Dashboard Metric Cards -->
+<div class="row text-white">
+  <div class="col-md-3">
+    <div class="card bg-primary mb-3">
+      <div class="card-body">
+        <h5 class="card-title">Total Employees</h5>
+        <p class="card-text fs-3">{{ total_employees }}</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-3">
+    <div class="card bg-success mb-3">
+      <div class="card-body">
+        <h5 class="card-title">Pending Leaves</h5>
+        <p class="card-text fs-3">{{ pending_leaves }}</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-3">
+    <div class="card bg-warning mb-3">
+      <div class="card-body">
+        <h5 class="card-title">Open Positions</h5>
+        <p class="card-text fs-3">{{ open_positions }}</p>
+      </div>
+    </div>
+  </div>
+  <!-- Add more cards as needed -->
+</div>
+{% endblock %}

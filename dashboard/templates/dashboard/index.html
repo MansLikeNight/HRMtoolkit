@@ -1,0 +1,52 @@
+{% extends "dashboard/base.html" %}
+
+{% block content %}
+<div class="container-fluid mt-4">
+
+  <!-- Filters -->
+  <div class="row mb-4">
+    <div class="col-md-3"><input type="text" class="form-control" placeholder="Filter by Name"></div>
+    <div class="col-md-3">
+      <select class="form-control">
+        <option selected disabled>Department</option>
+        <option>HR</option>
+        <option>Finance</option>
+        <option>Engineering</option>
+      </select>
+    </div>
+    <div class="col-md-3"><input type="date" class="form-control"></div>
+    <div class="col-md-3"><input type="date" class="form-control"></div>
+  </div>
+
+  <!-- Metrics Cards -->
+  <div class="row">
+    <div class="col-md-4 mb-3">
+      <div class="card bg-primary text-white">
+        <div class="card-body">
+          <h5>Total Employees</h5>
+          <p class="display-6">{{ total_employees }}</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-4 mb-3">
+      <div class="card bg-warning text-white">
+        <div class="card-body">
+          <h5>Pending Leave Requests</h5>
+          <p class="display-6">{{ pending_leaves }}</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-4 mb-3">
+      <div class="card bg-success text-white">
+        <div class="card-body">
+          <h5>Open Positions</h5>
+          <p class="display-6">{{ open_positions }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+{% endblock %}

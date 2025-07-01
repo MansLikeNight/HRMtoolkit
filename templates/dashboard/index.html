@@ -1,0 +1,360 @@
+{% extends "dashboard/base.html" %}
+{% block content %}
+<style>
+  body {
+    background: #f6f8fc;
+  }
+  .dashboard-filters {
+    background: #fff;
+    border-radius: 1rem;
+    padding: 1rem 2rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+    display: flex;
+    gap: 1.5rem;
+    align-items: center;
+    justify-content: flex-end;
+  }
+  .dashboard-filters .form-select {
+    min-width: 140px;
+    background-color: #f6f8fc !important;
+    color: #333 !important;
+    border: 1px solid #e0e6ed;
+    font-size: 0.95rem;
+    border-radius: 0.5rem;
+  }
+  .dashboard-filters .btn-admin {
+    background: linear-gradient(90deg, #5a8dee 0%, #6fd0c5 100%);
+    color: #fff;
+    border: none;
+    border-radius: 0.5rem;
+    font-weight: 600;
+    letter-spacing: 1px;
+    padding: 0.5rem 1.5rem;
+    transition: background 0.2s;
+    box-shadow: 0 2px 8px rgba(90,141,238,0.12);
+  }
+  .dashboard-filters .btn-admin:hover {
+    background: #5a8dee;
+    color: #fff;
+  }
+  .dashboard-metrics {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+    justify-content: space-between;
+  }
+  .dashboard-metric-card {
+    background: linear-gradient(120deg, #f6f8fc 60%, #e0e6ed 100%);
+    border-radius: 1rem;
+    box-shadow: 0 2px 12px rgba(90,141,238,0.08);
+    padding: 1.2rem 1.2rem;
+    min-width: 200px;
+    min-height: 110px;
+    border: 1px solid #e0e6ed;
+    flex: 1 1 200px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .dashboard-metric-card h5 {
+    color: #5a8dee;
+    font-size: 1rem;
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+    letter-spacing: 0.5px;
+  }
+  .dashboard-metric-card h3 {
+    color: #222;
+    font-size: 2rem;
+    font-weight: 700;
+    margin: 0;
+    letter-spacing: 1px;
+  }
+  .dashboard-charts-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: repeat(3, 320px);
+    gap: 2.5rem;
+    margin-bottom: 2rem;
+    width: 100%;
+    max-width: 1400px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .dashboard-card {
+    background: #fff;
+    border-radius: 1rem;
+    box-shadow: 0 2px 12px rgba(90,141,238,0.08);
+    padding: 2rem 2.5rem 2rem 2.5rem;
+    border: 1px solid #e0e6ed;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: flex-start;
+    height: 100%;
+    min-width: 0;
+  }
+  .dashboard-card .card-header {
+    background: none;
+    color: #5a8dee;
+    font-weight: 600;
+    font-size: 1.2rem;
+    border: none;
+    margin-bottom: 1rem;
+    padding: 0;
+    text-align: left;
+    width: 100%;
+  }
+  .dashboard-card .empty-graph {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    background: repeating-linear-gradient(135deg, #f6f8fc, #e0e6ed 10px, #f6f8fc 20px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #b0b0b0;
+    font-size: 2.2rem;
+    font-weight: 300;
+    margin: 0 auto;
+  }
+  .dashboard-card canvas {
+    width: 100% !important;
+    height: 260px !important;
+    max-width: 100%;
+    display: block;
+    margin: 0 auto;
+  }
+  .dashboard-table-section {
+    background: #fff;
+    border-radius: 1rem;
+    box-shadow: 0 2px 12px rgba(90,141,238,0.08);
+    padding: 1.5rem 1.2rem;
+    margin-bottom: 2rem;
+    border: 1px solid #e0e6ed;
+  }
+  .dashboard-table-section .dashboard-section-title {
+    color: #5a8dee;
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    letter-spacing: 0.5px;
+  }
+  .list-group-item {
+    background: #f6f8fc;
+    border: 1px solid #e0e6ed;
+    color: #333;
+    border-radius: 0.5rem;
+    margin-bottom: 0.5rem;
+  }
+</style>
+
+<div class="dashboard-filters">
+  <select class="form-select bg-light text-dark" name="day">
+    <option selected>Day</option>
+    <option>Today</option>
+    <option>This Week</option>
+    <option>This Month</option>
+  </select>
+  <select class="form-select bg-light text-dark" name="department">
+    <option selected>Department</option>
+    {% for dept in department_choices %}
+      <option value="{{ dept }}">{{ dept }}</option>
+    {% endfor %}
+  </select>
+  <select class="form-select bg-light text-dark" name="time">
+    <option selected>Time</option>
+    <option>Morning</option>
+    <option>Afternoon</option>
+    <option>Evening</option>
+  </select>
+  <select class="form-select bg-light text-dark" name="employee">
+    <option selected>Employee</option>
+    <option>All Employees</option>
+    {% for emp in employee_list %}
+      <option value="{{ emp.full_name }}">{{ emp.get_display_name }}</option>
+    {% endfor %}
+  </select>
+  <form method="get" style="display:inline; margin:0;">
+    <button type="submit" class="btn btn-primary" style="margin:0 1rem;">Search</button>
+  </form>
+  <a href="/admin" class="btn btn-admin">Admin Panel</a>
+</div>
+
+<div class="dashboard-metrics">
+  <div class="dashboard-metric-card">
+    <h5>Total Employees</h5>
+    <h3>{{ total_employees }}</h3>
+  </div>
+  <div class="dashboard-metric-card">
+    <h5>Departments</h5>
+    <h3>{{ total_departments }}</h3>
+  </div>
+  <div class="dashboard-metric-card">
+    <h5>Pending Applicants</h5>
+    <h3>{{ pending_applicants }}</h3>
+  </div>
+  <div class="dashboard-metric-card">
+    <h5>Pending Leaves</h5>
+    <h3>{{ pending_leaves }}</h3>
+  </div>
+  <div class="dashboard-metric-card">
+    <h5>Open Positions</h5>
+    <h3>{{ open_positions }}</h3>
+  </div>
+</div>
+
+<div class="dashboard-charts-grid">
+  <div class="dashboard-card">
+    <div class="card-header">Attendance</div>
+    <canvas id="attendanceChart"></canvas>
+  </div>
+  <div class="dashboard-card">
+    <div class="card-header">Performance Review</div>
+    <canvas id="performanceChart"></canvas>
+  </div>
+  <div class="dashboard-card">
+    <div class="card-header">Recruitment</div>
+    <canvas id="recruitmentChart"></canvas>
+  </div>
+  <div class="dashboard-card">
+    <div class="card-header">Training</div>
+    <canvas id="trainingChart"></canvas>
+  </div>
+  <div class="dashboard-card">
+    <div class="card-header">Payroll</div>
+    <canvas id="payrollChart"></canvas>
+  </div>
+  <div class="dashboard-card">
+    <div class="card-header">Leaves</div>
+    <canvas id="leavesChart"></canvas>
+  </div>
+</div>
+
+<!-- JSON data for charts (injected as JS variables) -->
+<script>
+  const attendanceLabels = JSON.parse('{{ attendance_labels|escapejs }}');
+  const attendanceData = JSON.parse('{{ attendance_data|escapejs }}');
+  const performanceLabels = JSON.parse('{{ performance_labels|escapejs }}');
+  const performanceData = JSON.parse('{{ performance_data|escapejs }}');
+  const recruitmentLabels = JSON.parse('{{ recruitment_labels|escapejs }}');
+  const recruitmentData = JSON.parse('{{ recruitment_data|escapejs }}');
+  const trainingLabels = JSON.parse('{{ training_labels|escapejs }}');
+  const trainingData = JSON.parse('{{ training_data|escapejs }}');
+  const payrollLabels = JSON.parse('{{ payroll_labels|escapejs }}');
+  const payrollData = JSON.parse('{{ payroll_data|escapejs }}');
+  const leavesLabels = JSON.parse('{{ leaves_labels|escapejs }}');
+  const leavesData = JSON.parse('{{ leaves_data|escapejs }}');
+</script>
+
+<!-- Chart.js CDN -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+// Attendance Pie Chart
+const attendanceCtx = document.getElementById('attendanceChart').getContext('2d');
+new Chart(attendanceCtx, {
+    type: 'pie',
+    data: {
+        labels: attendanceLabels,
+        datasets: [{
+            data: attendanceData,
+            backgroundColor: ['#5a8dee', '#e0e6ed'],
+        }]
+    },
+    options: {
+        plugins: { legend: { display: true, position: 'bottom' } },
+        responsive: true,
+        maintainAspectRatio: false,
+    }
+});
+// Performance Review Pie Chart
+const performanceCtx = document.getElementById('performanceChart').getContext('2d');
+new Chart(performanceCtx, {
+    type: 'pie',
+    data: {
+        labels: performanceLabels,
+        datasets: [{
+            data: performanceData,
+            backgroundColor: ['#5a8dee', '#6fd0c5', '#e0e6ed', '#ffd36e', '#ff6e6e'],
+        }]
+    },
+    options: {
+        plugins: { legend: { display: true, position: 'bottom' } },
+        responsive: true,
+        maintainAspectRatio: false,
+    }
+});
+// Recruitment Pie Chart
+const recruitmentCtx = document.getElementById('recruitmentChart').getContext('2d');
+new Chart(recruitmentCtx, {
+    type: 'pie',
+    data: {
+        labels: recruitmentLabels,
+        datasets: [{
+            data: recruitmentData,
+            backgroundColor: ['#5a8dee', '#ffd36e', '#e0e6ed'],
+        }]
+    },
+    options: {
+        plugins: { legend: { display: true, position: 'bottom' } },
+        responsive: true,
+        maintainAspectRatio: false,
+    }
+});
+// Training Bar Chart
+const trainingCtx = document.getElementById('trainingChart').getContext('2d');
+new Chart(trainingCtx, {
+    type: 'bar',
+    data: {
+        labels: trainingLabels,
+        datasets: [{
+            label: 'Sessions',
+            data: trainingData,
+            backgroundColor: ['#5a8dee', '#6fd0c5'],
+        }]
+    },
+    options: {
+        plugins: { legend: { display: false } },
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: { y: { beginAtZero: true } }
+    }
+});
+// Payroll Pie Chart
+const payrollCtx = document.getElementById('payrollChart').getContext('2d');
+new Chart(payrollCtx, {
+    type: 'pie',
+    data: {
+        labels: payrollLabels,
+        datasets: [{
+            data: payrollData,
+            backgroundColor: ['#5a8dee', '#ffd36e', '#e0e6ed'],
+        }]
+    },
+    options: {
+        plugins: { legend: { display: true, position: 'bottom' } },
+        responsive: true,
+        maintainAspectRatio: false,
+    }
+});
+// Leaves Pie Chart
+const leavesCtx = document.getElementById('leavesChart').getContext('2d');
+new Chart(leavesCtx, {
+    type: 'pie',
+    data: {
+        labels: leavesLabels,
+        datasets: [{
+            data: leavesData,
+            backgroundColor: ['#5a8dee', '#6fd0c5', '#ff6e6e'],
+        }]
+    },
+    options: {
+        plugins: { legend: { display: true, position: 'bottom' } },
+        responsive: true,
+        maintainAspectRatio: false,
+    }
+});
+</script>
+{% endblock %}

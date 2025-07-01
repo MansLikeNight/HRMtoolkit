@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Leave Requests</h2>
+<a class="btn btn-success mb-2" href="{% url 'leave-create' %}">+ New Leave</a>
+<table class="table table-bordered">
+  <tr>
+    <th>Employee</th>
+    <th>Start</th>
+    <th>End</th>
+    <th>Reason</th>
+    <th>Status</th>
+  </tr>
+  {% for leave in leaves %}
+  <tr>
+    <td>{{ leave.employee }}</td>
+    <td>{{ leave.start_date }}</td>
+    <td>{{ leave.end_date }}</td>
+    <td>{{ leave.reason }}</td>
+    <td>{{ leave.status }}</td>
+  </tr>
+  {% endfor %}
+</table>
+{% endblock %}
