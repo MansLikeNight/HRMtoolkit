@@ -6,3 +6,4 @@ tablib
 gunicorn
 reportlab
 whitenoise
+openpyxl
